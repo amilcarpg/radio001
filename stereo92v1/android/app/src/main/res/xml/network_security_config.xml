@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">server-23.stream-server.nl</domain>
+         <domain includeSubdomains="true">stream-server.nl</domain>
+<domain includeSubdomains="true">node-30.zeno.fm</domain>
+         <domain includeSubdomains="true">zeno.fm</domain>
+         
+    </domain-config>
+</network-security-config>
