@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
                         ),
                             onPressed: (){
                           setState(() {
-                            FlutterRadio.play(url: url);
+                            FlutterRadio.playOrPause(url: url);
                             isPlaying = !isPlaying;
                             isVisible = !isVisible;
                           });
