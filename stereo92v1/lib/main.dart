@@ -36,20 +36,17 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         home: new Scaffold(
           appBar: new AppBar(
-            title: const Text('IndieXL2 Online Radio'),
-            backgroundColor: Colors.blueGrey.shade900,
+            title: const Text('S T E R E O   9 2 - Más Radio.'),
+            backgroundColor: Color(0xFF002d81),
             centerTitle: true,
           ),
           body: Container(
-            color: Colors.blueGrey.shade900,
+            color: Color(0xFF002d81),
             child: new Column(
                 children: <Widget>[
                   Expanded(
                     flex: 7,
-                    child: Icon(
-                      Icons.radio, size: 250,
-                      color: Colors.white,
-                    ),
+                    child: Image.asset('assets/images/stereo92.png'),
                   ),
                   Expanded(
                     flex: 2,
