@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.stereo92v1">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="stereo92v1"
         android:icon="@mipmap/ic_launcher"
