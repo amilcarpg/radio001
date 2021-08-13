@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
 
   bool isPlaying = false;
   bool isVisible = true;
+  bool isEnable = true;
 
   @override
   void initState() {
@@ -72,10 +73,15 @@ class _MyAppState extends State<MyApp> {
                         
                           onPressed: (){
                           setState(() {
+                            if(isEnable){
+                            isEnable=false;
                             print("Button Press");
                             FlutterRadio.playOrPause(url: url);
                             isPlaying = !isPlaying;
                             isVisible = !isVisible;
+                            isEnable=true;
+                            }
+                            
                           });
                             },
                                                     
