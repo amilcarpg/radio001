@@ -13,7 +13,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 //APG
   //String url = "http://server-23.stream-server.nl:8438";
-  String url = 'http://node-30.zeno.fm/c49wbe2r1f8uv?rj-ttl=5&rj-tok=AAABet_F7jwAAu6yUsiz21ickA';
+  String url = 'https://serverssl.innovatestream.pe:8080/http://167.114.118.120:7442/;';
+  //String url = 'http://node-19.zeno.fm/c49wbe2r1f8uv?rj-ttl=5&rj-tok=AAABezv3buMADyyFslIr3yebgw';
 
   bool isPlaying = false;
   bool isVisible = true;
@@ -32,15 +33,16 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'IndieXL Online Radio',
+      title: 'Stereo92',
         debugShowCheckedModeBanner: false,
         home: new Scaffold(
           appBar: new AppBar(
-            title: const Text('S T E R E O   9 2 - Más Radio.'),
+            title: const Text('0x2 -S T E R E O   9 2 - Más Radio.'),
             backgroundColor: Color(0xFF002d81),
             centerTitle: true,
           ),
           body: Container(
+            
             color: Color(0xFF002d81),
             child: new Column(
                 children: <Widget>[
@@ -51,10 +53,13 @@ class _MyAppState extends State<MyApp> {
                   Expanded(
                     flex: 2,
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 40),
+                      padding: const EdgeInsets.only(right: 10),
                       child: Align(
                         alignment: FractionalOffset.center,
-                        child: IconButton(icon: isPlaying? Icon(
+                        child: IconButton(
+                         iconSize: 80,
+                            //apg
+                          icon: isPlaying? Icon(
                           Icons.pause_circle_outline,
                           size: 80,
                           color: Colors.white,
@@ -64,13 +69,16 @@ class _MyAppState extends State<MyApp> {
                           color: Colors.white,
                           size: 80,
                         ),
-                            onPressed: (){
+                        
+                          onPressed: (){
                           setState(() {
+                            print("Button Press");
                             FlutterRadio.playOrPause(url: url);
                             isPlaying = !isPlaying;
                             isVisible = !isVisible;
                           });
                             },
+                                                    
                         ),
                       ),
                     ),
