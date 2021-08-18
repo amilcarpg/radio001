@@ -13,8 +13,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 //APG2
   //String url = "http://server-23.stream-server.nl:8438";
-  String url = 'https://serverssl.innovatestream.pe:8080/http://167.114.118.120:7442/;';
+  //String url = 'https://serverssl.innovatestream.pe:8080/http://167.114.118.120:7442/;';
   //String url = 'http://node-19.zeno.fm/c49wbe2r1f8uv?rj-ttl=5&rj-tok=AAABezv3buMADyyFslIr3yebgw';
+String url = 'http://stream.zeno.fm/c49wbe2r1f8uv';
 
   bool isPlaying = false;
   bool isVisible = true;
@@ -44,7 +45,7 @@ class _MyAppState extends State<MyApp> {
           ),
           body: Container(
             
-            color: Color(0xFF002d81),
+            color: Colors.black,
             child: new Column(
                 children: <Widget>[
                   Expanded(
