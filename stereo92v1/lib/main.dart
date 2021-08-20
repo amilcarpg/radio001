@@ -39,8 +39,8 @@ String url = 'http://stream.zeno.fm/c49wbe2r1f8uv';
         debugShowCheckedModeBanner: false,
         home: new Scaffold(
           appBar: new AppBar(
-            title: const Text('0x2 -S T E R E O   9 2 - Más Radio.'),
-            backgroundColor: Color(0xFF002d81),
+            title: const Text('S T E R E O   9 2 - Más Radio.'),
+            backgroundColor: Color(0xFF0292D6),
             centerTitle: true,
           ),
           body: Container(
@@ -50,7 +50,7 @@ String url = 'http://stream.zeno.fm/c49wbe2r1f8uv';
                 children: <Widget>[
                   Expanded(
                     flex: 7,
-                    child: Image.asset('assets/images/stereo92.png'),
+                    child: Image.asset('assets/images/stereo92n.png'),
                   ),
                   Expanded(
                     flex: 2,
