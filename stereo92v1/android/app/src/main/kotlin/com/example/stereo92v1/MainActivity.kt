@@ -1,4 +1,4 @@
-package com.example.stereo92v1
+package com.focuzlab.stereo92
 
 import io.flutter.embedding.android.FlutterActivity
 
