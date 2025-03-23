@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_radio/flutter_radio.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 
+class ConstantesApp {
+  static const String TITULO_APP = 'S T E R E O   9 2 - Más Radio.';
+  static const Color COLOR_PRIMARIO = Color(0xFF0292D6);
+  static const double TAMANO_ICONO = 80.0;
+  static const String URL_STREAM = 'http://stream.zeno.fm/c49wbe2r1f8uv';
+  static const double VOLUMEN_INICIAL = 1.0;
+  static const double ALTURA_ESPACIADOR = 50.0;
+  static const String MENSAJE_SIN_CONEXION = 'No hay conexión a internet';
+}
 
 void main() => runApp(new MyApp());
 
@@ -10,26 +21,124 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => new _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-//APG2
-  //String url = "http://server-23.stream-server.nl:8438";
-  //String url = 'https://serverssl.innovatestream.pe:8080/http://167.114.118.120:7442/;';
-  //String url = 'http://node-19.zeno.fm/c49wbe2r1f8uv?rj-ttl=5&rj-tok=AAABezv3buMADyyFslIr3yebgw';
-String url = 'http://stream.zeno.fm/c49wbe2r1f8uv';
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  String url = ConstantesApp.URL_STREAM;
 
   bool isPlaying = false;
   bool isVisible = true;
   bool isEnable = true;
+  bool isLoading = false;
+  bool tieneError = false;
+  String mensajeError = '';
+  bool estaCargando = false;
+  double volumen = 1.0;
 
   @override
   void initState() {
     super.initState();
-    audioStart();
+    WidgetsBinding.instance.addObserver(this);
+    initBackgroundService();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      audioStart();
+    });
+  }
+
+  Future<void> initBackgroundService() async {
+    final service = FlutterBackgroundService();
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        onStart: onStart,
+        autoStart: true,
+        isForegroundMode: true,
+      ),
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: onStart,
+      ),
+    );
+  }
+
+  static void onStart(ServiceInstance service) async {
+    // Mantener la reproducción en segundo plano
+    service.on('playAudio').listen((event) async {
+      await FlutterRadio.audioStart();
+      FlutterRadio.playOrPause(url: ConstantesApp.URL_STREAM);
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        // La app está en segundo plano
+        if (isPlaying) {
+          FlutterBackgroundService().invoke('playAudio');
+        }
+        break;
+      case AppLifecycleState.resumed:
+        // La app vuelve al primer plano
+        break;
+      default:
+        break;
+    }
   }
 
   Future<void> audioStart() async {
-    await FlutterRadio.audioStart();
-    print('Audio Start OK');
+    setState(() {
+      isLoading = true;
+      tieneError = false;
+    });
+    try {
+      await FlutterRadio.audioStart();
+      print('Audio iniciado correctamente');
+    } catch (e) {
+      setState(() {
+        tieneError = true;
+        mensajeError = e.toString();
+      });
+      print('Error al iniciar audio: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<bool> verificarConectividad() async {
+    var resultadoConectividad = await (Connectivity().checkConnectivity());
+    return resultadoConectividad != ConnectivityResult.none;
+  }
+
+  void manejarBuffer(bool cargando) {
+    setState(() {
+      estaCargando = cargando;
+    });
+  }
+
+  void ajustarVolumen(double valor) {
+    setState(() {
+      volumen = valor;
+      FlutterRadio.setVolume(volumen);
+    });
+  }
+
+  Future<void> manejarReproduccion() async {
+    if (!isEnable) return;
+    
+    final tieneConexion = await verificarConectividad();
+    if (!tieneConexion) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ConstantesApp.MENSAJE_SIN_CONEXION))
+      );
+      return;
+    }
+
+    setState(() {
+      isEnable = false;
+      isPlaying = !isPlaying;
+      FlutterRadio.playOrPause(url: url);
+      isEnable = true;
+    });
   }
 
   @override
@@ -39,8 +148,8 @@ String url = 'http://stream.zeno.fm/c49wbe2r1f8uv';
         debugShowCheckedModeBanner: false,
         home: new Scaffold(
           appBar: new AppBar(
-            title: const Text('S T E R E O   9 2 - Más Radio.'),
-            backgroundColor: Color(0xFF0292D6),
+            title: const Text(ConstantesApp.TITULO_APP),
+            backgroundColor: ConstantesApp.COLOR_PRIMARIO,
             centerTitle: true,
           ),
           body: Container(
@@ -52,48 +161,59 @@ String url = 'http://stream.zeno.fm/c49wbe2r1f8uv';
                     flex: 7,
                     child: Image.asset('assets/images/stereo92n.png'),
                   ),
+                  if (tieneError)
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        mensajeError,
+                        style: TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   Expanded(
                     flex: 2,
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Align(
-                        alignment: FractionalOffset.center,
-                        child: IconButton(
-                         iconSize: 80,
-                            //apg
-                          icon: isPlaying? Icon(
-                          Icons.pause_circle_outline,
-                          size: 80,
-                          color: Colors.white,
-                        )
-                            : Icon(
-                          Icons.play_circle_outline,
-                          color: Colors.white,
-                          size: 80,
-                        ),
-                        
-                          onPressed: (){
-                          setState(() {
-                            if(isEnable){
-                            isEnable=false;
-                            print("Button Press");
-                            FlutterRadio.playOrPause(url: url);
-                            isPlaying = !isPlaying;
-                            isVisible = !isVisible;
-                            isEnable=true;
-                            }
-                            
-                          });
-                            },
-                                                    
-                        ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          IconButton(
+                            iconSize: ConstantesApp.TAMANO_ICONO,
+                            icon: isPlaying
+                                ? Icon(
+                                    Icons.pause_circle_outline,
+                                    size: ConstantesApp.TAMANO_ICONO,
+                                    color: Colors.white,
+                                  )
+                                : Icon(
+                                    Icons.play_circle_outline,
+                                    color: Colors.white,
+                                    size: ConstantesApp.TAMANO_ICONO,
+                                  ),
+                            onPressed: manejarReproduccion,
+                          ),
+                          Slider(
+                            value: volumen,
+                            onChanged: ajustarVolumen,
+                            min: 0.0,
+                            max: 1.0,
+                            activeColor: Colors.white,
+                            inactiveColor: Colors.grey,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 50,)
+                  SizedBox(height: ConstantesApp.ALTURA_ESPACIADOR),
                 ],
             ),
           ),
         ));
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    FlutterRadio.stop();
+    super.dispose();
   }
 }
