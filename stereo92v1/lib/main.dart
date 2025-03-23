@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter_radio/flutter_radio.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 
@@ -22,6 +22,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  late AudioPlayer audioPlayer;
   String url = ConstantesApp.URL_STREAM;
 
   bool isPlaying = false;
@@ -36,6 +37,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    audioPlayer = AudioPlayer();
     WidgetsBinding.instance.addObserver(this);
     initBackgroundService();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -61,8 +63,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static void onStart(ServiceInstance service) async {
     // Mantener la reproducción en segundo plano
     service.on('playAudio').listen((event) async {
-      await FlutterRadio.audioStart();
-      FlutterRadio.playOrPause(url: ConstantesApp.URL_STREAM);
+      final player = AudioPlayer();
+      await player.setUrl(ConstantesApp.URL_STREAM);
+      player.play();
     });
   }
 
@@ -89,7 +92,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       tieneError = false;
     });
     try {
-      await FlutterRadio.audioStart();
+      await audioPlayer.setUrl(url);
       print('Audio iniciado correctamente');
     } catch (e) {
       setState(() {
@@ -118,7 +121,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void ajustarVolumen(double valor) {
     setState(() {
       volumen = valor;
-      FlutterRadio.setVolume(volumen);
+      audioPlayer.setVolume(volumen);
     });
   }
 
@@ -136,7 +139,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     setState(() {
       isEnable = false;
       isPlaying = !isPlaying;
-      FlutterRadio.playOrPause(url: url);
+      if (isPlaying) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
       isEnable = true;
     });
   }
@@ -212,8 +219,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    audioPlayer.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    FlutterRadio.stop();
     super.dispose();
   }
 }
