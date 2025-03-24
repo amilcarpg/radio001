@@ -3,6 +3,13 @@ import 'dart:async';
 import 'package:just_audio/just_audio.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'firebase/firebase_config.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseConfig.initializeFirebase();
+  runApp(MyApp());
+}
 
 class ConstantesApp {
   static const String TITULO_APP = 'S T E R E O   9 2 - Más Radio.';
@@ -13,8 +20,6 @@ class ConstantesApp {
   static const double ALTURA_ESPACIADOR = 50.0;
   static const String MENSAJE_SIN_CONEXION = 'No hay conexión a internet';
 }
-
-void main() => runApp(new MyApp());
 
 class MyApp extends StatefulWidget {
   @override

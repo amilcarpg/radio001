@@ -28,6 +28,8 @@ dependencies:
   connectivity_plus: ^5.0.2
   flutter_background_service: ^5.0.5
   cupertino_icons: ^1.0.6
+  firebase_core: ^2.15.1
+  firebase_analytics: ^10.4.5
 
 dev_dependencies:
   flutter_test:
