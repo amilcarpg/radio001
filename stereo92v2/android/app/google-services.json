@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "648960633930",
+    "project_id": "radio001-fc0b8",
+    "storage_bucket": "radio001-fc0b8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648960633930:android:93bc4a53bc62c2cab60ab3",
+        "android_client_info": {
+          "package_name": "com.example.stereo92v1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvp8tDNgF1rlPLq897FVu67D-bDmKOIas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
